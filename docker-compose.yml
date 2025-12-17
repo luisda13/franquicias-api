@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # 1. SERVICIO DE LA BASE DE DATOS (MONGODB)
+  mongo:
+    image: mongo:latest
+    container_name: mongodb_franquicias
+    restart: always
+    # Puertos (opcional, pero útil si quieres acceder desde tu máquina)
+    ports:
+      - "27017:27017"
+    # Persistencia: guarda los datos de MongoDB en un volumen persistente
+    volumes:
+      - mongo-data:/data/db
+
+  # 2. SERVICIO DE LA API SPRING BOOT
+  franquicias-api:
+    # Construye la imagen desde el Dockerfile en este directorio
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: franquicias_api
+    restart: always
+    ports:
+      - "8080:8080"
+    # Asegura que MongoDB se inicie antes que la API
+    depends_on:
+      - mongo
+    # Variables de entorno: Sobrescriben lo de application.properties
+    # Esto es una buena práctica en Docker
+    environment:
+      # Usamos 'mongo' como hostname, que es el nombre del servicio de la BD
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/franquiciasdb
+
+# 3. VOLUMEN PARA LA PERSISTENCIA DE DATOS
+volumes:
+  mongo-data:

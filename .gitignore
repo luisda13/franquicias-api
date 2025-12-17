@@ -1,0 +1,62 @@
+HELP.md
+
+### Maven ###
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+.settings/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Docker local
+.docker/
+
+# Variables de entorno locales (¡NUNCA subas credenciales!)
+.env
+.env.local
+application-local.properties
+
+# Dependencias locales Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Otros
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
