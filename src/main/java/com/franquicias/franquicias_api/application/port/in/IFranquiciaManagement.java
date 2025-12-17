@@ -12,16 +12,16 @@ public interface IFranquiciaManagement {
     // Criterio 2: Crear una nueva franquicia
     Mono<Franquicia> crearFranquicia(Franquicia franquicia);
 
-    // Nueva Búsqueda: Buscar todas las franquicias (solicitado en tu plan de pulido)
+    //Búsqueda: Buscar todas las franquicias (solicitado en tu plan de pulido)
     Flux<Franquicia> findAll();
 
-    // Nuevo para la validación: Buscar por nombre
+    // la validación: Buscar por nombre
     Mono<Franquicia> findByNombre(String nombre);
 
     // Criterio 3: Añadir una sucursal (Usada por IAddSucursalUseCase en el plan anterior)
     Mono<Franquicia> addSucursal(String franquiciaId, Sucursal sucursal);
 
-    // Nuevo: Buscar por ID (necesario para el Criterio 3 y futuras actualizaciones)
+    //Buscar por ID (necesario para el Criterio 3 y futuras actualizaciones)
     Mono<Franquicia> findById(String id);
 
     // Criterio 4: Exponer endpoint para agregar un nuevo producto a la sucursal
@@ -32,4 +32,10 @@ public interface IFranquiciaManagement {
 
     // Criterio 5.2: Eliminar un producto de todas las sucursales de la franquicia
     Mono<String> deleteProductoFromAllSucursales(String franquiciaId, String productoNombre);
+
+    /**
+     * Criterio 6: Modifica el stock de un producto específico en una sucursal específica.
+     * @param nuevoStock El nuevo valor de stock.
+     */
+    Mono<Franquicia> updateStock(String franquiciaId, String sucursalNombre, String productoNombre, int nuevoStock);
 }

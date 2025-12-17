@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/franquicias")
 public class FranquiciaController {
@@ -109,5 +111,31 @@ public class FranquiciaController {
             @PathVariable String productoNombre) {
 
         return franquiciaManagement.deleteProductoFromAllSucursales(franquiciaId, productoNombre);
+    }
+
+    /**
+     * Criterio 6: Modificar la cantidad de un producto.
+     * Metodo: PUT /franquicias/{franquiciaId}/sucursales/{sucursalNombre}/productos/{productoNombre}/stock
+     * Cuerpo: {"stock": 150}
+     */
+    @PutMapping(
+            value = "/{franquiciaId}/sucursales/{sucursalNombre}/productos/{productoNombre}/stock",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<Franquicia> updateStock(
+            @PathVariable String franquiciaId,
+            @PathVariable String sucursalNombre,
+            @PathVariable String productoNombre,
+            @RequestBody Map<String, Integer> requestBody) {
+
+        // Extraemos el stock del mapa JSON. Asumimos que el JSON es {"stock": 150}
+        Integer nuevoStock = requestBody.get("stock");
+
+        if (nuevoStock == null) {
+            return Mono.error(new IllegalArgumentException("El campo 'stock' es obligatorio en el cuerpo de la petición."));
+        }
+
+        return franquiciaManagement.updateStock(franquiciaId, sucursalNombre, productoNombre, nuevoStock);
     }
 }

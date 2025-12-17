@@ -29,4 +29,23 @@ public class Sucursal {
                 .findFirst()
                 .orElse(null);
     }
+
+    /**
+     * Busca y actualiza el stock de un producto.
+     * @return true si el producto fue encontrado y actualizado, false si no.
+     */
+    public boolean actualizarCantidadProducto(String nombreProducto, int nuevoStock) {
+        if (this.productos == null) return false;
+
+        // Buscar el producto por nombre
+        return this.productos.stream()
+                .filter(p -> p.getNombre().equalsIgnoreCase(nombreProducto))
+                .findFirst()
+                .map(producto -> {
+                    // Si el producto existe, aplica el cambio de stock
+                    producto.setStock(nuevoStock);
+                    return true;
+                })
+                .orElse(false);
+    }
 }

@@ -194,4 +194,31 @@ public class FranquiciaService implements IFranquiciaManagement {
                             .thenReturn("Producto '" + productoNombre + "' eliminado exitosamente de TODAS las sucursales de la franquicia.");
                 });
     }
+
+    /**
+     * Criterio 6: Modifica la cantidad de un producto.
+     */
+    @Override
+    public Mono<Franquicia> updateStock(String franquiciaId, String sucursalNombre, String productoNombre, int nuevoStock) {
+
+        //Validación inicial (400 Bad Request)
+        if (franquiciaId == null || sucursalNombre == null || productoNombre == null || franquiciaId.trim().isEmpty()) {
+            return Mono.error(new IllegalArgumentException("ID de Franquicia, nombre de Sucursal y nombre de Producto son obligatorios."));
+        }
+        if (nuevoStock < 0) {
+            return Mono.error(new IllegalArgumentException("La cantidad no puede ser negativo."));
+        }
+
+        //Flujo Reactivo
+        return franquiciaRepository.findById(franquiciaId)
+                // Lanza 404 si la franquicia no existe
+                .switchIfEmpty(Mono.error(new RecursoNoEncontradoException("Franquicia", franquiciaId)))
+                .map(franquicia -> {
+                    // La lógica de dominio se encarga de validar Sucursal y Producto (lanzando 404 si falla)
+                    franquicia.modificarCantidadProducto(sucursalNombre, productoNombre, nuevoStock);
+                    return franquicia;
+                })
+                //Guardar el documento modificado
+                .flatMap(franquiciaRepository::save);
+    }
 }

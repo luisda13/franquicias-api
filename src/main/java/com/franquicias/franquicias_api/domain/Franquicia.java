@@ -93,4 +93,25 @@ public class Franquicia {
             throw new RecursoNoEncontradoException("Producto", nombreProducto + " en ninguna sucursal de la Franquicia " + this.getNombre());
         }
     }
+
+    /**
+     * Coordina la actualización del stock de un producto dentro de una sucursal.
+     * Lanza 404 si la sucursal o el producto no existen.
+     */
+    public void modificarCantidadProducto(String nombreSucursal, String nombreProducto, int nuevoStock) {
+
+        //Validar existencia de Sucursal (Lanza 404 si no existe)
+        Sucursal sucursal = buscarSucursalPorNombre(nombreSucursal);
+
+        if (sucursal == null) {
+            throw new RecursoNoEncontradoException("Sucursal", nombreSucursal + " en la Franquicia " + this.getNombre());
+        }
+
+        //Delegar la actualización a la Sucursal y validar el Producto (Lanza 404 si no existe)
+        boolean productoActualizado = sucursal.actualizarCantidadProducto(nombreProducto, nuevoStock);
+
+        if (!productoActualizado) {
+            throw new RecursoNoEncontradoException("Producto", nombreProducto + " en la sucursal " + nombreSucursal);
+        }
+    }
 }
