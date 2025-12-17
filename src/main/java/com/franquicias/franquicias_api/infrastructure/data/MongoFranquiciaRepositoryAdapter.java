@@ -2,6 +2,7 @@ package com.franquicias.franquicias_api.infrastructure.data;
 
 import com.franquicias.franquicias_api.application.port.out.IFranquiciaRepository;
 import com.franquicias.franquicias_api.domain.Franquicia;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Component;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 // Spring Data Repository: Maneja la conexión directa a MongoDB de forma reactiva
 interface ISpringDataFranquiciaRepository extends ReactiveMongoRepository<Franquicia, String> {
-
+    Mono<Franquicia> findByNombreIgnoreCase(String nombre);
 }
 
 @Component
@@ -26,5 +27,20 @@ public class MongoFranquiciaRepositoryAdapter implements IFranquiciaRepository {
     @Override
     public Mono<Franquicia> save(Franquicia franquicia) {
         return springRepository.save(franquicia);
+    }
+
+    @Override
+    public Mono<Franquicia> findById(String id) {
+        return springRepository.findById(id);
+    }
+
+    @Override
+    public Mono<Franquicia> findByNombre(String nombre) {
+        return springRepository.findByNombreIgnoreCase(nombre);
+    }
+
+    @Override
+    public Flux<Franquicia> findAll() {
+        return springRepository.findAll();
     }
 }
