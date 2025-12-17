@@ -1,7 +1,7 @@
 package com.franquicias.franquicias_api.infrastructure.excetion;
 
+import com.franquicias.franquicias_api.domain.exception.RecursoDuplicadoException;
 import com.franquicias.franquicias_api.domain.exception.RecursoNoEncontradoException;
-import com.franquicias.franquicias_api.domain.exception.ExceptionFranquicia; // Tu excepción de conflicto
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,8 +31,8 @@ public class GlobalExceptionHandler {
      * Maneja ExceptionFranquicia -> HTTP 409 Conflict
      * Ocurre en crearFranquicia cuando ya existe.
      */
-    @ExceptionHandler(ExceptionFranquicia.class)
-    public Mono<ResponseEntity<Map<String, Object>>> handleConflictException(ExceptionFranquicia ex) {
+    @ExceptionHandler(RecursoDuplicadoException.class)
+    public Mono<ResponseEntity<Map<String, Object>>> handleConflictException(RecursoDuplicadoException ex) {
         return Mono.just(
                 ResponseEntity
                         .status(HttpStatus.CONFLICT) // Código 409

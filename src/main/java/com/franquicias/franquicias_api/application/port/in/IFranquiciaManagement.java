@@ -1,6 +1,7 @@
 package com.franquicias.franquicias_api.application.port.in;
 
 import com.franquicias.franquicias_api.domain.Franquicia;
+import com.franquicias.franquicias_api.domain.Producto;
 import com.franquicias.franquicias_api.domain.Sucursal;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,4 +23,7 @@ public interface IFranquiciaManagement {
 
     // Nuevo: Buscar por ID (necesario para el Criterio 3 y futuras actualizaciones)
     Mono<Franquicia> findById(String id);
+
+    // Criterio 4: Exponer endpoint para agregar un nuevo producto a la sucursal
+    Mono<Franquicia> addProducto(String franquiciaId, String sucursalNombre, Producto producto);
 }

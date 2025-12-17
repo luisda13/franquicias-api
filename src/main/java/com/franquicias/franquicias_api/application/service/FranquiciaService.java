@@ -3,9 +3,10 @@ package com.franquicias.franquicias_api.application.service;
 import com.franquicias.franquicias_api.application.port.in.IFranquiciaManagement;
 import com.franquicias.franquicias_api.application.port.out.IFranquiciaRepository;
 import com.franquicias.franquicias_api.domain.Franquicia;
+import com.franquicias.franquicias_api.domain.Producto;
 import com.franquicias.franquicias_api.domain.Sucursal;
 // Ajusta este import a tu paquete de excepciones exacto
-import com.franquicias.franquicias_api.domain.exception.ExceptionFranquicia;
+import com.franquicias.franquicias_api.domain.exception.RecursoDuplicadoException;
 import com.franquicias.franquicias_api.domain.exception.RecursoNoEncontradoException; // ¡Asegúrate de crear esta clase!
 
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class FranquiciaService implements IFranquiciaManagement {
         return franquiciaRepository.findByNombre(franquicia.getNombre())
                 .flatMap(existente ->
                         // Si encuentra una, lanza una excepción de conflicto (409)
-                        Mono.error(new ExceptionFranquicia(existente.getNombre()))
+                        Mono.error(new RecursoDuplicadoException("La franquicia '" + existente.getNombre() + "' ya existe."))
                 )
                 .switchIfEmpty(
                         // Si no existe (Mono.empty()), procede a guardar
@@ -106,5 +107,42 @@ public class FranquiciaService implements IFranquiciaManagement {
 
                 // 3. Guardar el documento modificado
                 .flatMap(franquiciaRepository::save);
+    }
+
+    @Override
+    public Mono<Franquicia> addProducto(String franquiciaId, String sucursalNombre, Producto producto) {
+        // 1. Validaciones básicas de entrada
+        if (franquiciaId == null || sucursalNombre == null || producto == null) {
+            return Mono.error(new IllegalArgumentException("Todos los campos (ID, Nombre de Sucursal y Producto) son obligatorios."));
+        }
+        if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
+            return Mono.error(new IllegalArgumentException("El nombre del producto es obligatorio."));
+        }
+
+        // 2. Flujo Reactivo: Buscar -> Validar/Modificar -> Guardar
+        return franquiciaRepository.findById(franquiciaId)
+                // Lanza 404 si la franquicia no existe
+                .switchIfEmpty(Mono.error(new RecursoNoEncontradoException("Franquicia", franquiciaId)))
+                .map(franquicia -> {
+
+                    // Buscar la sucursal (usando el nuevo metodo de dominio)
+                    Sucursal sucursal = franquicia.buscarSucursalPorNombre(sucursalNombre);
+
+                    // Lanza 404 si la sucursal no existe dentro de la franquicia
+                    if (sucursal == null) {
+                        throw new RecursoNoEncontradoException("Sucursal", sucursalNombre + " en la Franquicia " + franquiciaId);
+                    }
+
+                    // Validación de unicidad de Producto
+                    if (sucursal.getProductos().stream().anyMatch(p -> p.getNombre().equalsIgnoreCase(producto.getNombre()))) {
+                        throw new RecursoDuplicadoException("El producto '" + producto.getNombre() + "' ya existe en la sucursal '" + sucursalNombre + "'.");
+                    }
+
+                    // Agregar el producto a la sucursal
+                    sucursal.getProductos().add(producto);
+
+                    return franquicia;
+                })
+                .flatMap(franquiciaRepository::save); // 3. Guardar el dato modificado
     }
 }

@@ -2,6 +2,7 @@ package com.franquicias.franquicias_api.infrastructure.api;
 
 import com.franquicias.franquicias_api.application.port.in.IFranquiciaManagement;
 import com.franquicias.franquicias_api.domain.Franquicia;
+import com.franquicias.franquicias_api.domain.Producto;
 import com.franquicias.franquicias_api.domain.Sucursal;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -63,5 +64,23 @@ public class FranquiciaController {
             @RequestBody Sucursal sucursal) {
 
         return franquiciaManagement.addSucursal(franquiciaId, sucursal);
+    }
+
+    /**
+     * Criterio 4: Exponer endpoint para agregar un nuevo producto a la sucursal.
+     * Metodo: POST /franquicias/{franquiciaId}/sucursales/{sucursalNombre}/productos
+     */
+    @PostMapping(
+            value = "/{franquiciaId}/sucursales/{sucursalNombre}/productos",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(HttpStatus.OK) // Modificación de un recurso existente
+    public Mono<Franquicia> addProducto(
+            @PathVariable String franquiciaId,
+            @PathVariable String sucursalNombre,
+            @RequestBody Producto producto) {
+
+        return franquiciaManagement.addProducto(franquiciaId, sucursalNombre, producto);
     }
 }
