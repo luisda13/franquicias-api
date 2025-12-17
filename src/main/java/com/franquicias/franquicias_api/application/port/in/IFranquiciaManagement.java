@@ -26,4 +26,10 @@ public interface IFranquiciaManagement {
 
     // Criterio 4: Exponer endpoint para agregar un nuevo producto a la sucursal
     Mono<Franquicia> addProducto(String franquiciaId, String sucursalNombre, Producto producto);
+
+    // Criterio 5.1: Eliminar un producto de una sucursal específica
+    Mono<String> deleteProducto(String franquiciaId, String sucursalNombre, String productoNombre);
+
+    // Criterio 5.2: Eliminar un producto de todas las sucursales de la franquicia
+    Mono<String> deleteProductoFromAllSucursales(String franquiciaId, String productoNombre);
 }

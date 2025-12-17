@@ -145,4 +145,53 @@ public class FranquiciaService implements IFranquiciaManagement {
                 })
                 .flatMap(franquiciaRepository::save); // 3. Guardar el dato modificado
     }
+
+    /**
+     * Criterio 5.1: Eliminar un producto de una sucursal específica.
+     */
+    @Override
+    public Mono<String> deleteProducto(String franquiciaId, String sucursalNombre, String productoNombre) {
+        //Validación de campos obligatorios (400 Bad Request)
+        if (franquiciaId == null || sucursalNombre == null || productoNombre == null || franquiciaId.trim().isEmpty()) {
+            return Mono.error(new IllegalArgumentException("ID de Franquicia, nombre de Sucursal y nombre de Producto son obligatorios."));
+        }
+
+        return franquiciaRepository.findById(franquiciaId)
+                //Validar Franquicia (404)
+                .switchIfEmpty(Mono.error(new RecursoNoEncontradoException("Franquicia", franquiciaId)))
+                .flatMap(franquicia -> {
+                    // Ejecutamos la lógica de dominio. Si falla (404), la excepción se propaga.
+                    franquicia.eliminarProductoDeSucursal(sucursalNombre, productoNombre);
+
+                    // Si tiene éxito, guardamos y completamos el Mono<Void>
+                    return franquiciaRepository.save(franquicia)
+                            //Devolver el mensaje de éxito explícito (200 OK)
+                            .thenReturn("Producto '" + productoNombre + "' eliminado exitosamente de la sucursal '" + sucursalNombre + "'.");
+                });
+    }
+
+
+    /**
+     * Criterio 5.2: Eliminar el mismo producto de todas las sucursales de la franquicia.
+     */
+    @Override
+    public Mono<String> deleteProductoFromAllSucursales(String franquiciaId, String productoNombre) {
+        //Validación de campos obligatorios (400 Bad Request)
+        if (franquiciaId == null || productoNombre == null || franquiciaId.trim().isEmpty()) {
+            return Mono.error(new IllegalArgumentException("ID de Franquicia y nombre de Producto son obligatorios."));
+        }
+
+        return franquiciaRepository.findById(franquiciaId)
+                //Validar Franquicia (404)
+                .switchIfEmpty(Mono.error(new RecursoNoEncontradoException("Franquicia", franquiciaId)))
+                .flatMap(franquicia -> {
+                    // Ejecutamos la lógica de dominio. Si falla (404), la excepción se propaga.
+                    franquicia.eliminarProductoDeTodasLasSucursales(productoNombre);
+
+                    // Si tiene éxito, guardamos y completamos el Mono<Void>
+                    return franquiciaRepository.save(franquicia)
+                            // Devolver el mensaje de éxito explícito (200 OK)
+                            .thenReturn("Producto '" + productoNombre + "' eliminado exitosamente de TODAS las sucursales de la franquicia.");
+                });
+    }
 }

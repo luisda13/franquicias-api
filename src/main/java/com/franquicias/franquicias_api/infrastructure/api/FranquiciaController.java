@@ -83,4 +83,31 @@ public class FranquiciaController {
 
         return franquiciaManagement.addProducto(franquiciaId, sucursalNombre, producto);
     }
+
+    /**
+     * Criterio 5.1: Eliminar un producto de una sucursal específica.
+     * Metodo: DELETE /franquicias/{franquiciaId}/sucursales/{sucursalNombre}/productos/{productoNombre}
+     */
+    @DeleteMapping(value = "/{franquiciaId}/sucursales/{sucursalNombre}/productos/{productoNombre}")
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<String> deleteProducto(
+            @PathVariable String franquiciaId,
+            @PathVariable String sucursalNombre,
+            @PathVariable String productoNombre) {
+
+        return franquiciaManagement.deleteProducto(franquiciaId, sucursalNombre, productoNombre);
+    }
+
+    /**
+     * Criterio 5.2: Eliminar un producto de todas las sucursales de la franquicia.
+     * Metodo: DELETE /franquicias/{franquiciaId}/productos/{productoNombre}
+     */
+    @DeleteMapping(value = "/{franquiciaId}/productos/{productoNombre}")
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<String> deleteProductoFromAllSucursales(
+            @PathVariable String franquiciaId,
+            @PathVariable String productoNombre) {
+
+        return franquiciaManagement.deleteProductoFromAllSucursales(franquiciaId, productoNombre);
+    }
 }
