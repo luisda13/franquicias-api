@@ -6,11 +6,11 @@ WORKDIR /app
 #se agregar una variable de entorno por si el docker no lee bien
 ENV LANG en_US.UTF-8
 
-# Copia código fuente (todo, incluyendo pom.xml y src)
+# Copia cóoigo fuente todo, incluyendo pom.xml y src
 COPY . .
 
-# Construye la app
-# En tu caso el JAR se llama 'franquicias-api-0.0.1-SNAPSHOT.jar'
+RUN chmod +x mvnw
+
 RUN ./mvnw clean package -DskipTests
 
 # Etapa de runtime
