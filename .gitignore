@@ -49,10 +49,6 @@ logs/
 .env.local
 application-local.properties
 
-# Dependencias locales Maven
-.mvn/
-mvnw
-mvnw.cmd
 
 # Otros
 *.tmp
