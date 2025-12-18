@@ -27,12 +27,12 @@ public class FranquiciaService implements IFranquiciaManagement {
      */
     @Override
     public Mono<Franquicia> crearFranquicia(Franquicia franquicia) {
-        // Validación 1: Verificar que la entidad no sea nula y tenga nombre
+        //Verificar que la entidad no sea nula y tenga nombre
         if (franquicia == null || franquicia.getNombre() == null || franquicia.getNombre().trim().isEmpty()) {
             return Mono.error(new IllegalArgumentException("El nombre de la franquicia es obligatorio."));
         }
 
-        // Validación 2: Verificar si ya existe una franquicia con ese nombre.
+        //Verificar si ya existe una franquicia con ese nombre.
         return franquiciaRepository.findByNombre(franquicia.getNombre())
                 .flatMap(existente ->
                         // Si encuentra una, lanza una excepción de conflicto (409)
@@ -40,7 +40,7 @@ public class FranquiciaService implements IFranquiciaManagement {
                 )
                 .switchIfEmpty(
                         // Si no existe (Mono.empty()), procede a guardar
-                        franquiciaRepository.save(franquicia)
+                        Mono.defer(() -> franquiciaRepository.save(franquicia))
                 )
                 .cast(Franquicia.class);
     }
