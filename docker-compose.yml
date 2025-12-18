@@ -6,7 +6,15 @@ services:
     image: mongo:latest
     container_name: mongodb_franquicias
     restart: always
-    # Puertos (opcional, pero útil si quieres acceder desde tu máquina)
+
+    # Añadimos un chequeo de salud para esperar a que Mongo esté listo
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.runCommand({ping: 1})" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    # Puertos
     ports:
       - "27017:27017"
     # Persistencia: guarda los datos de MongoDB en un volumen persistente
@@ -27,7 +35,6 @@ services:
     depends_on:
       - mongo
     # Variables de entorno: Sobrescriben lo de application.properties
-    # Esto es una buena práctica en Docker
     environment:
       # Usamos 'mongo' como hostname, que es el nombre del servicio de la BD
       SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/franquiciasdb
