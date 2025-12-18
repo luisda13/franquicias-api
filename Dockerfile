@@ -8,6 +8,9 @@ ENV LANG en_US.UTF-8
 
 # Copia cóoigo fuente todo, incluyendo pom.xml y src
 COPY . .
+COPY pom.xml .
+COPY .mvn .mvn
+COPY mvnw .
 
 RUN chmod +x mvnw
 
