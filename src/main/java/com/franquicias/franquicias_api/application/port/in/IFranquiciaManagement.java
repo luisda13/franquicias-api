@@ -46,4 +46,19 @@ public interface IFranquiciaManagement {
      * @return Flux de DTOs con el producto max por sucursal.
      */
     Flux<ProductoMaxStockDto> obtenerProductosMaxStockPorSucursal(String franquiciaId);
+
+    /**
+     * Extra 1: Actualiza el nombre de una franquicia.
+     */
+    Mono<Franquicia> updateNombreFranquicia(String id, String nuevoNombre);
+
+    /**
+     * Extra 2: Actualiza el nombre de una sucursal en una franquicia.
+     */
+    Mono<Franquicia> updateNombreSucursal(String franquiciaId, String nombreActual, String nuevoNombre);
+
+    /**
+     * Extra 3: Actualiza el nombre de un producto en una sucursal.
+     */
+    Mono<Franquicia> updateNombreProducto(String franquiciaId, String sucursalNombre, String nombreActual, String nuevoNombre);
 }

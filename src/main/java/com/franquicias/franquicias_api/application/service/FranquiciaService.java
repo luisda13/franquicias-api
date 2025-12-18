@@ -246,4 +246,67 @@ public class FranquiciaService implements IFranquiciaManagement {
         dto.setSucursalNombre(sucursal.getNombre());
         return dto;
     }
+
+    /**
+     * Extra 1: Actualizar Nombre de Franquicia
+     */
+    @Override
+    public Mono<Franquicia> updateNombreFranquicia(String id, String nuevoNombre) {
+        if (id == null || nuevoNombre == null || nuevoNombre.trim().isEmpty()) {
+            return Mono.error(new IllegalArgumentException("ID y nuevo nombre son obligatorios."));
+        }
+
+        //Verificar duplicidad de nombre (409)
+        return franquiciaRepository.findByNombre(nuevoNombre)
+                .flatMap(existente -> {
+                    // Si el nombre existe Y no es la franquicia que estamos editando, es conflicto.
+                    if (!existente.getId().equals(id)) {
+                        return Mono.error(new RecursoDuplicadoException("Ya existe una franquicia con el nombre: " + nuevoNombre));
+                    }
+                    return Mono.empty(); // Mismo nombre, continuar
+                })
+                .then(franquiciaRepository.findById(id)) //Buscar por ID (404)
+                .switchIfEmpty(Mono.error(new RecursoNoEncontradoException("Franquicia", id)))
+                .map(franquicia -> {
+                    franquicia.actualizarNombre(nuevoNombre); //Aplicar Dominio
+                    return franquicia;
+                })
+                .flatMap(franquiciaRepository::save); //Guardar
+    }
+
+    /**
+     * Extra 2: Actualizar Nombre de Sucursal
+     */
+    @Override
+    public Mono<Franquicia> updateNombreSucursal(String franquiciaId, String nombreActual, String nuevoNombre) {
+        if (franquiciaId == null || nombreActual == null || nuevoNombre == null || nuevoNombre.trim().isEmpty()) {
+            return Mono.error(new IllegalArgumentException("Campos obligatorios faltantes."));
+        }
+
+        return franquiciaRepository.findById(franquiciaId) //Buscar franquicia (404)
+                .switchIfEmpty(Mono.error(new RecursoNoEncontradoException("Franquicia", franquiciaId)))
+                .map(franquicia -> {
+                    franquicia.actualizarNombreSucursal(nombreActual, nuevoNombre); //Aplicar Dominio (valida 404/409)
+                    return franquicia;
+                })
+                .flatMap(franquiciaRepository::save); //Guardar
+    }
+
+    /**
+     * Extra 3: Actualizar Nombre de Producto
+     */
+    @Override
+    public Mono<Franquicia> updateNombreProducto(String franquiciaId, String sucursalNombre, String nombreActual, String nuevoNombre) {
+        if (franquiciaId == null || sucursalNombre == null || nombreActual == null || nuevoNombre == null || nuevoNombre.trim().isEmpty()) {
+            return Mono.error(new IllegalArgumentException("Campos obligatorios faltantes."));
+        }
+
+        return franquiciaRepository.findById(franquiciaId) //Buscar franquicia (404)
+                .switchIfEmpty(Mono.error(new RecursoNoEncontradoException("Franquicia", franquiciaId)))
+                .map(franquicia -> {
+                    franquicia.actualizarNombreProducto(sucursalNombre, nombreActual, nuevoNombre); //Aplicar Dominio (valida 404/409)
+                    return franquicia;
+                })
+                .flatMap(franquiciaRepository::save); //Guardar
+    }
 }

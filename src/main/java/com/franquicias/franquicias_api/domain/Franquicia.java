@@ -114,4 +114,60 @@ public class Franquicia {
             throw new RecursoNoEncontradoException("Producto", nombreProducto + " en la sucursal " + nombreSucursal);
         }
     }
+
+    // Extra 1: Actualizar Nombre de Franquicia
+    public void actualizarNombre(String nuevoNombre) {
+        if (nuevoNombre == null || nuevoNombre.trim().isEmpty()) {
+            throw new IllegalArgumentException("El nuevo nombre de la franquicia no puede ser vacío.");
+        }
+        this.nombre = nuevoNombre;
+    }
+
+    // Extra 2: Actualizar Nombre de Sucursal
+    public void actualizarNombreSucursal(String nombreSucursalActual, String nuevoNombre) {
+        if (nombreSucursalActual == null || nuevoNombre == null || nuevoNombre.trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre actual y el nuevo nombre de la sucursal son obligatorios.");
+        }
+
+        // Verificar si el nuevo nombre ya está en uso en esta franquicia (409)
+        if (this.sucursales.stream().anyMatch(s -> s.getNombre().equalsIgnoreCase(nuevoNombre))) {
+            throw new RecursoDuplicadoException("Ya existe una sucursal con el nombre: " + nuevoNombre + " en esta franquicia.");
+        }
+
+        //Encontrar la sucursal actual (404)
+        Sucursal sucursal = this.sucursales.stream()
+                .filter(s -> s.getNombre().equalsIgnoreCase(nombreSucursalActual))
+                .findFirst()
+                .orElseThrow(() -> new RecursoNoEncontradoException("Sucursal", nombreSucursalActual));
+
+        //Aplicar el cambio
+        sucursal.setNombre(nuevoNombre);
+    }
+
+    // Extra 3: Actualizar Nombre de Producto
+    public void actualizarNombreProducto(String nombreSucursal, String nombreProductoActual, String nuevoNombreProducto) {
+        if (nombreSucursal == null || nombreProductoActual == null || nuevoNombreProducto == null || nuevoNombreProducto.trim().isEmpty()) {
+            throw new IllegalArgumentException("Los nombres de Sucursal, Producto actual y Producto nuevo son obligatorios.");
+        }
+
+        //Encontrar la sucursal (404)
+        Sucursal sucursal = this.sucursales.stream()
+                .filter(s -> s.getNombre().equalsIgnoreCase(nombreSucursal))
+                .findFirst()
+                .orElseThrow(() -> new RecursoNoEncontradoException("Sucursal", nombreSucursal));
+
+        //Verificar si el nuevo nombre de producto ya existe en esta sucursal (409)
+        if (sucursal.getProductos().stream().anyMatch(p -> p.getNombre().equalsIgnoreCase(nuevoNombreProducto))) {
+            throw new RecursoDuplicadoException("Ya existe un producto con el nombre: " + nuevoNombreProducto + " en la sucursal " + nombreSucursal);
+        }
+
+        //Encontrar el producto actual (404)
+        Producto producto = sucursal.getProductos().stream()
+                .filter(p -> p.getNombre().equalsIgnoreCase(nombreProductoActual))
+                .findFirst()
+                .orElseThrow(() -> new RecursoNoEncontradoException("Producto", nombreProductoActual));
+
+        //Aplicar el cambio
+        producto.setNombre(nuevoNombreProducto);
+    }
 }

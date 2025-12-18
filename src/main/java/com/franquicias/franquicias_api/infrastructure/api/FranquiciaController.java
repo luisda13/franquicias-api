@@ -144,4 +144,61 @@ public class FranquiciaController {
     public Flux<ProductoMaxStockDto> obtenerProductosMaxStock(@PathVariable String id) {
         return franquiciaManagement.obtenerProductosMaxStockPorSucursal(id);
     }
+
+    /**
+     * Extra 1: Actualizar Nombre de Franquicia.
+     * Metodo: PUT /franquicias/{id}
+     */
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<Franquicia> updateNombreFranquicia(@PathVariable String id, @RequestBody Map<String, String> requestBody) {
+        String nuevoNombre = requestBody.get("nombre");
+
+        if (nuevoNombre == null || nuevoNombre.trim().isEmpty()) {
+            return Mono.error(new IllegalArgumentException("El campo 'nombre' es obligatorio en el cuerpo de la petición."));
+        }
+
+        return franquiciaManagement.updateNombreFranquicia(id, nuevoNombre);
+    }
+
+    /**
+     * Extra 2: Actualizar Nombre de Sucursal.
+     * Metodo: PUT /franquicias/{id}/sucursales/{nombreActual}
+     */
+    @PutMapping(value = "/{franquiciaId}/sucursales/{nombreActual}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<Franquicia> updateNombreSucursal(
+            @PathVariable String franquiciaId,
+            @PathVariable String nombreActual,
+            @RequestBody Map<String, String> requestBody) {
+
+        String nuevoNombre = requestBody.get("nombre");
+
+        if (nuevoNombre == null || nuevoNombre.trim().isEmpty()) {
+            return Mono.error(new IllegalArgumentException("El campo 'nombre' es obligatorio en el cuerpo de la petición."));
+        }
+
+        return franquiciaManagement.updateNombreSucursal(franquiciaId, nombreActual, nuevoNombre);
+    }
+
+    /**
+     * Extra 3: Actualizar Nombre de Producto.
+     * Metodo: PUT /franquicias/{id}/sucursales/{nombre}/productos/{productoActual}
+     */
+    @PutMapping(value = "/{franquiciaId}/sucursales/{sucursalNombre}/productos/{nombreActual}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<Franquicia> updateNombreProducto(
+            @PathVariable String franquiciaId,
+            @PathVariable String sucursalNombre,
+            @PathVariable String nombreActual,
+            @RequestBody Map<String, String> requestBody) {
+
+        String nuevoNombre = requestBody.get("nombre");
+
+        if (nuevoNombre == null || nuevoNombre.trim().isEmpty()) {
+            return Mono.error(new IllegalArgumentException("El campo 'nombre' es obligatorio en el cuerpo de la petición."));
+        }
+
+        return franquiciaManagement.updateNombreProducto(franquiciaId, sucursalNombre, nombreActual, nuevoNombre);
+    }
 }
