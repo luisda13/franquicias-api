@@ -1,5 +1,6 @@
 package com.franquicias.franquicias_api.application.service;
 
+import com.franquicias.franquicias_api.application.dto.ProductoMaxStockDto;
 import com.franquicias.franquicias_api.application.port.in.IFranquiciaManagement;
 import com.franquicias.franquicias_api.application.port.out.IFranquiciaRepository;
 import com.franquicias.franquicias_api.domain.Franquicia;
@@ -220,5 +221,29 @@ public class FranquiciaService implements IFranquiciaManagement {
                 })
                 //Guardar el documento modificado
                 .flatMap(franquiciaRepository::save);
+    }
+
+    @Override
+    public Flux<ProductoMaxStockDto> obtenerProductosMaxStockPorSucursal(String franquiciaId) {
+        return franquiciaRepository.findById(franquiciaId)
+                .switchIfEmpty(Mono.error(new RecursoNoEncontradoException("Franquicia no encontrada" , franquiciaId)))
+                .flatMapMany(franquicia -> Flux.fromIterable(franquicia.getSucursales())
+                        .flatMap(sucursal -> encontrarProductoMaxStock(sucursal)
+                                .map(producto -> mapToDto(producto, sucursal)))
+                );
+    }
+
+    private Mono<Producto> encontrarProductoMaxStock(Sucursal sucursal) {
+        return Flux.fromIterable(sucursal.getProductos())
+                .reduce((p1, p2) -> p1.getStock() > p2.getStock() ? p1 : p2)
+                .switchIfEmpty(Mono.error(new RecursoNoEncontradoException("No hay productos en la sucursal" , sucursal.getNombre())));
+    }
+
+    private ProductoMaxStockDto mapToDto(Producto producto, Sucursal sucursal) {
+        ProductoMaxStockDto dto = new ProductoMaxStockDto();
+        dto.setProductoNombre(producto.getNombre());
+        dto.setStock(producto.getStock());
+        dto.setSucursalNombre(sucursal.getNombre());
+        return dto;
     }
 }

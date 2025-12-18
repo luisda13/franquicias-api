@@ -1,5 +1,6 @@
 package com.franquicias.franquicias_api.infrastructure.api;
 
+import com.franquicias.franquicias_api.application.dto.ProductoMaxStockDto;
 import com.franquicias.franquicias_api.application.port.in.IFranquiciaManagement;
 import com.franquicias.franquicias_api.domain.Franquicia;
 import com.franquicias.franquicias_api.domain.Producto;
@@ -137,5 +138,10 @@ public class FranquiciaController {
         }
 
         return franquiciaManagement.updateStock(franquiciaId, sucursalNombre, productoNombre, nuevoStock);
+    }
+
+    @GetMapping("/{id}/productos-max-stock")
+    public Flux<ProductoMaxStockDto> obtenerProductosMaxStock(@PathVariable String id) {
+        return franquiciaManagement.obtenerProductosMaxStockPorSucursal(id);
     }
 }

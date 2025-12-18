@@ -1,5 +1,6 @@
 package com.franquicias.franquicias_api.application.port.in;
 
+import com.franquicias.franquicias_api.application.dto.ProductoMaxStockDto;
 import com.franquicias.franquicias_api.domain.Franquicia;
 import com.franquicias.franquicias_api.domain.Producto;
 import com.franquicias.franquicias_api.domain.Sucursal;
@@ -38,4 +39,11 @@ public interface IFranquiciaManagement {
      * @param nuevoStock El nuevo valor de stock.
      */
     Mono<Franquicia> updateStock(String franquiciaId, String sucursalNombre, String productoNombre, int nuevoStock);
+
+    /**
+     * Criterio 7: Obtiene el producto con máximo stock por cada sucursal de una franquicia.
+     * @param franquiciaId ID de la franquicia.
+     * @return Flux de DTOs con el producto max por sucursal.
+     */
+    Flux<ProductoMaxStockDto> obtenerProductosMaxStockPorSucursal(String franquiciaId);
 }
