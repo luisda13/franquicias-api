@@ -45,67 +45,10 @@ Ejecuta el siguiente comando en la raíz del proyecto para construir la imagen y
 
 docker-compose up --build
 
-Verificar
-La aplicación estará disponible en: http://localhost:8080
+verificar en la nube
 
 Despliegue y URL de Producción
 La solución está actualmente desplegada en Railway, conectada a MongoDB Atlas (el servicio de persistencia en la nube).
-
-
-Endpoint locales
-
-    All Franquicia Get - http://localhost:8080/franquicias
-    Busucar franquicia por ID - Get - http://localhost:8080/franquicias/{diFranquicia}
-    Buscar franquicia por nombre - Get - http://localhost:8080/franquicias/nombre/{nombreFranquicia}
-    Buscar mayor cantidad producto - Get - http://localhost:8080/franquicias/{diFranquicia}/productos-max-stock
-    Crear Franquicia - Post - http://localhost:8080/franquicias
-    Body
-    {
-    "nombre": "Global Burgers Corp3",
-    "sucursales": [
-    {
-    "nombre": "Sucursal Central (Centro)3",
-    "productos": [
-    {
-    "nombre": "Burger Clásica3",
-    "stock": 50
-    },
-    {
-    "nombre": "Fries Max3",
-    "stock": 120
-    }
-    ]
-    },
-    {
-    "nombre": "Sucursal Norte (Mall)3",
-    "productos": []
-    }
-    ]
-    }
-    Crear Sucursal - Post - http://localhost:8080/franquicias/{diFranquicia}/sucursales
-    Body
-    {
-    "nombre": "Sucursal Sur (Aeropuerto)",
-    "productos": [
-    {
-    "nombre": "Ensalada César",
-    "stock": 150
-    }
-    ]
-    }
-    Crear Producto - Post - http://localhost:8080/franquicias/{diFranquicia}/sucursales/{nombreSucursal}/productos
-    Body
-    {"nombre": "Sancocho", "stock": 30}
-    Eliminar Producto por Sucursal - Delete - http://localhost:8080/franquicias/{diFranquicia}/sucursales/{nombreSucursal}/productos/{nombreProducto}
-    Eliminar mismo producto de todas las sucursales - Delete - http://localhost:8080/franquicias/{diFranquicia}/productos/{nombreProducto}
-    Actualizar cantidad Producto - Put - http://localhost:8080/franquicias/{diFranquicia}/sucursales/{nombreSucursal}/productos/{nombreProducto}/stock
-    Body - {"stock": 500}
-    Actualizar Nombre Franquicia - Put - http://localhost:8080/franquicias/{diFranquicia}
-    Body - {"nombre": "Global Burgers Corp la original"}
-    Actualizar Nombre Secursal - Put - http://localhost:8080/franquicias/{diFranquicia}/sucursales/{nombreSucursal}
-    Body - {"nombre": "Sucursal Sur (Aeropuerto)2"}
-    Actualizar Nombre Producto - Put - http://localhost:8080/franquicias/{diFranquicia}/sucursales/{sucursalNombre}/productos/productosNombre
-    Body - {"nombre": "hamburgejas al vapor"}
 
 Endpoint Web
 
@@ -160,4 +103,63 @@ Endpoint Web
     Actualizar Nombre Secursal - Put - https://franquicias-api-production.up.railway.app/franquicias/{diFranquicia}/sucursales/{nombreScurusal}
     Body - {"nombre": "Sucursal Sur (Aeropuerto)2"}
     Actualizar Nombre Producto - Put - https://franquicias-api-production.up.railway.app/franquicias/{diFranquicia}/sucursales/{nombreScurusal}/productos/{nombreProdcuto}
+    Body - {"nombre": "hamburgejas al vapor"}
+
+
+Verificar local
+La aplicación estará disponible en: http://localhost:8080
+
+Endpoint locales
+
+    All Franquicia Get - http://localhost:8080/franquicias
+    Busucar franquicia por ID - Get - http://localhost:8080/franquicias/{diFranquicia}
+    Buscar franquicia por nombre - Get - http://localhost:8080/franquicias/nombre/{nombreFranquicia}
+    Buscar mayor cantidad producto - Get - http://localhost:8080/franquicias/{diFranquicia}/productos-max-stock
+    Crear Franquicia - Post - http://localhost:8080/franquicias
+    Body
+    {
+    "nombre": "Global Burgers Corp3",
+    "sucursales": [
+    {
+    "nombre": "Sucursal Central (Centro)3",
+    "productos": [
+    {
+    "nombre": "Burger Clásica3",
+    "stock": 50
+    },
+    {
+    "nombre": "Fries Max3",
+    "stock": 120
+    }
+    ]
+    },
+    {
+    "nombre": "Sucursal Norte (Mall)3",
+    "productos": []
+    }
+    ]
+    }
+    Crear Sucursal - Post - http://localhost:8080/franquicias/{diFranquicia}/sucursales
+    Body
+    {
+    "nombre": "Sucursal Sur (Aeropuerto)",
+    "productos": [
+    {
+    "nombre": "Ensalada César",
+    "stock": 150
+    }
+    ]
+    }
+    Crear Producto - Post - http://localhost:8080/franquicias/{diFranquicia}/sucursales/{nombreSucursal}/productos
+    Body
+    {"nombre": "Sancocho", "stock": 30}
+    Eliminar Producto por Sucursal - Delete - http://localhost:8080/franquicias/{diFranquicia}/sucursales/{nombreSucursal}/productos/{nombreProducto}
+    Eliminar mismo producto de todas las sucursales - Delete - http://localhost:8080/franquicias/{diFranquicia}/productos/{nombreProducto}
+    Actualizar cantidad Producto - Put - http://localhost:8080/franquicias/{diFranquicia}/sucursales/{nombreSucursal}/productos/{nombreProducto}/stock
+    Body - {"stock": 500}
+    Actualizar Nombre Franquicia - Put - http://localhost:8080/franquicias/{diFranquicia}
+    Body - {"nombre": "Global Burgers Corp la original"}
+    Actualizar Nombre Secursal - Put - http://localhost:8080/franquicias/{diFranquicia}/sucursales/{nombreSucursal}
+    Body - {"nombre": "Sucursal Sur (Aeropuerto)2"}
+    Actualizar Nombre Producto - Put - http://localhost:8080/franquicias/{diFranquicia}/sucursales/{sucursalNombre}/productos/productosNombre
     Body - {"nombre": "hamburgejas al vapor"}
